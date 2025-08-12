@@ -41,8 +41,9 @@ impl<T: Serialize + Send> Writer for Res<T> {
                 res.render(StatusError::internal_server_error());
             }
         }
+
         if self.code >= 400 {
-            depot.inject(self.info);
+            depot.insert("error", self.info);
         }
     }
 }
