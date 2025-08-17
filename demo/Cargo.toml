@@ -4,3 +4,9 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
+toolbox = { path = "../toolbox" }
+
+salvo = { workspace = true }
+validator = { workspace = true, features = ["derive"] }
+tokio = { workspace = true, features = ["full"] }
+serde = { workspace = true, features = ["derive"] }
