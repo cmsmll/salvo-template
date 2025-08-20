@@ -24,8 +24,8 @@ pub enum OutputMethod {
 /// 标准输出
 #[derive(Debug)]
 pub struct Stdout {
-    color: bool,
-    output: std::io::Stdout,
+    pub color: bool,
+    pub output: std::io::Stdout,
 }
 
 impl Output for Stdout {
@@ -61,8 +61,8 @@ impl OutFile {
     pub fn new(path: PathBuf, name: String, delete: Option<i64>) -> io::Result<Self> {
         let created_at = OffsetDateTime::now_local().unwrap();
         fs::create_dir_all(&path)?;
-        let name = name.replace("{date}", &created_at.date().to_string());
-        let file = File::options().create(true).append(true).open(path.join(&name))?;
+        let file_name = name.replace("{date}", &created_at.date().to_string());
+        let file = File::options().create(true).append(true).open(path.join(&file_name))?;
         Ok(Self {
             path,
             name,
@@ -102,7 +102,7 @@ impl Default for OutFile {
 
 impl Output for OutFile {
     fn output(&mut self, message: &Message) -> io::Result<()> {
-        if (message.begin - self.created_at).whole_days() > 0 {
+        if message.begin.date() != self.created_at.date() {
             self.file = self.update_log_file(&message.begin)?;
         }
         message.write(&mut self.file)
